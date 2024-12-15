@@ -1,0 +1,47 @@
+.gradient-custom {
+    background: linear-gradient(45deg, #006AFF, #80B3FF);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    max-width: 800px;
+}
+
+.alert {
+    display: none;
+}
+
+.limitations {
+    font-size: 0.9rem;
+}
+
+.url-card {
+    transition: all 0.3s ease;
+}
+
+.url-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.copy-btn:active {
+    transform: scale(0.95);
+}
+
+.footer {
+    margin-top: auto;
+    padding: 20px 0;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.footer a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer a:hover {
+    color: #80B3FF;
+}

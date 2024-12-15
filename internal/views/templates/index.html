@@ -1,0 +1,16 @@
+<div class="container mt-5">
+    <div class="card url-card">
+        <div class="card-body">
+            <form id="shortenForm" class="mb-4" method="post" action="/">
+                <div class="mb-3">
+                    <label for="targetUrl" class="form-label">Enter your URL</label>
+                    <input name="targetUrl" type="url" class="form-control" id="targetUrl" required
+                        placeholder="https://example.com" autofocus>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Shorten URL</button>
+            </form>
+
+            <div class="alert alert-danger" id="errorAlert"></div>
+        </div>
+    </div>
+</div>
