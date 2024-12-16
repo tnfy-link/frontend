@@ -26,6 +26,14 @@ func (s *Service) Shorten(ctx context.Context, targetURL string) (api.Link, erro
 	return res.Link, err
 }
 
+func (s *Service) Get(ctx context.Context, linkID string) (api.Link, error) {
+	ctx, cancel := s.prepareContext(ctx)
+	defer cancel()
+
+	res, err := s.api.GetLink(ctx, linkID)
+	return res.Link, err
+}
+
 func (s *Service) prepareContext(ctx context.Context) (context.Context, context.CancelFunc) {
 	return context.WithTimeout(ctx, s.timeout)
 }

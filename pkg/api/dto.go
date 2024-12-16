@@ -15,6 +15,10 @@ type Link struct {
 	ValidUntil time.Time `json:"validUntil"`
 }
 
+type GetLinkResponse struct {
+	Link Link `json:"link"`
+}
+
 type PostLinksRequest struct {
 	Link CreateLink `json:"link"`
 }

@@ -1,0 +1,6 @@
+@baseUrl=http://localhost:3001
+@linkId={{$dotenv LINK_ID}}
+
+###
+# @no-redirect
+GET {{baseUrl}}/{{linkId}} HTTP/1.1

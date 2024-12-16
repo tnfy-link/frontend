@@ -26,6 +26,12 @@ func (c *Client) Shorten(ctx context.Context, targetURL string) (PostLinksRespon
 	return res, c.doRequest(ctx, http.MethodPost, "v1/links", nil, req, &res)
 }
 
+func (c *Client) GetLink(ctx context.Context, linkID string) (GetLinkResponse, error) {
+	res := GetLinkResponse{}
+
+	return res, c.doRequest(ctx, http.MethodGet, fmt.Sprintf("v1/links/%s", linkID), nil, nil, &res)
+}
+
 func (c *Client) doRequest(ctx context.Context, method, path string, headers map[string]string, payload, response any) error {
 	var reqBody io.Reader = nil
 	if payload != nil {
