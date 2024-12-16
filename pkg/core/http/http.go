@@ -7,15 +7,16 @@ import (
 	"go.uber.org/zap"
 )
 
-func New(config Config, views fiber.Views, logger *zap.Logger) (*fiber.App, error) {
+func New(config Config, option Options, logger *zap.Logger) (*fiber.App, error) {
 	app := fiber.New(fiber.Config{
 		DisableStartupMessage:   true,
 		EnableIPValidation:      true,
 		EnableTrustedProxyCheck: true,
-		ErrorHandler:            ErrorHandler,
+		ErrorHandler:            option.errorHandler,
+		GETOnly:                 option.getOnly,
 		ProxyHeader:             config.ProxyHeader,
 		TrustedProxies:          config.Proxies,
-		Views:                   views,
+		Views:                   option.views,
 	})
 	app.Use(fiberzap.New(fiberzap.Config{
 		SkipBody: func(c *fiber.Ctx) bool {
@@ -27,16 +28,4 @@ func New(config Config, views fiber.Views, logger *zap.Logger) (*fiber.App, erro
 	app.Use(recover.New())
 
 	return app, nil
-}
-
-func ErrorHandler(c *fiber.Ctx, err error) error {
-	code := fiber.StatusInternalServerError
-
-	// Retrieve the custom status code if it's an fiber.*Error
-	if e, ok := err.(*fiber.Error); ok {
-		code = e.Code
-	}
-
-	// Send json error
-	return c.Status(code).JSON(ErrorResponse{Error: Error{Message: err.Error()}})
 }

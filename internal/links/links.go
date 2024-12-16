@@ -8,9 +8,14 @@ import (
 )
 
 type Service struct {
-	api *api.Client
+	api    *api.Client
+	apiURL string
 
 	timeout time.Duration
+}
+
+func (s *Service) URL() string {
+	return s.apiURL
 }
 
 func (s *Service) Shorten(ctx context.Context, targetURL string) (api.Link, error) {
@@ -31,7 +36,8 @@ func New(api *api.Client, config Config) *Service {
 	}
 
 	return &Service{
-		api: api,
+		api:    api,
+		apiURL: config.URL,
 
 		timeout: config.Timeout,
 	}

@@ -24,6 +24,13 @@ func Run() {
 			logOption.UseLogLevel(zapcore.DebugLevel)
 			return &logOption
 		}),
+		fx.Provide(func(views fiber.Views, logger *zap.Logger) http.Options {
+			opts := http.Options{}
+			http.WithViews(views)(&opts)
+			http.WithErrorHandler(http.NewViewsErrorHandler(logger, "error"))(&opts)
+			http.WithGetOnly()(&opts)
+			return opts
+		}),
 		http.Module,
 		validator.Module,
 		// App Modules
