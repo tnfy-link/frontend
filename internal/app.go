@@ -41,6 +41,10 @@ func Run() {
 		// Kickstarter
 		fx.Invoke(func(app *fiber.App, home *home.Controller) {
 			home.Register(app)
+
+			app.Use(func(c *fiber.Ctx) error {
+				return fiber.NewError(fiber.StatusNotFound, "Not Found")
+			})
 		}),
 	).
 		Run()
