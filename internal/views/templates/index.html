@@ -1,107 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TNFY Link &mdash; Simple and Fast URL Shortener</title>
-    <meta name="description"
-        content="Simple and fast URL shortener without registration and ads. Shorten your links and gain valuable insights into your traffic.">
-    <meta name="keywords"
-        content="url shortener, link shortener, url analytics, utm tracking, link statistics, url management">
-    <meta name="author" content="Aleksandr Soloshenko">
-    <meta property="og:title" content="TNFY Link &mdash; Simple and Fast URL Shortener">
-    <meta property="og:description" content="Shorten your URLs without registration and ads">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://tnfy.link">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="TNFY Link &mdash; Simple and Fast URL Shortener">
-    <meta name="twitter:description" content="Shorten your URLs without registration and ads">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css"
-        integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css"
-        integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="/static/css/main.css">
-    <script>
-        const CONFIG = {
-            API_URL: "{{ .API_URL }}",
-        };
-    </script>
-</head>
-
-<body>
-    <div class="container-fluid gradient-custom">
-        <a href="/" class="link-underline link-underline-opacity-0">
-            <h1 class="text-center text-light mt-5 mb-4">
-                <svg width="40" height="40" class="me-2" viewBox="0 0 24 24">
-                    <path fill="currentColor"
-                        d="M3.9,12C3.9,10.29 5.29,8.9 7,8.9H11V7H7A5,5 0 0,0 2,12A5,5 0 0,0 7,17H11V15.1H7C5.29,15.1 3.9,13.71 3.9,12M8,13H16V11H8V13M17,7H13V8.9H17C18.71,8.9 20.1,10.29 20.1,12C20.1,13.71 18.71,15.1 17,15.1H13V17H17A5,5 0 0,0 22,12A5,5 0 0,0 17,7Z" />
-                </svg>
-                TNFY Link
-            </h1>
-        </a>
-
-        <div class="container mt-5">
-            <div id="inputCard" class="card url-card">
-                <div class="card-body">
-                    <h5 class="card-title">Enter Your URL</h5>
-                    <form id="shortenForm" class="mb-4" method="post" action="/">
-                        <div class="mb-3">
-                            <input name="targetUrl" type="url" class="form-control" id="targetUrl" required
-                                placeholder="https://example.com" autofocus>
-                        </div>
-                        <button id="shortenBtn" type="submit" class="btn btn-primary w-100">Shorten</button>
-                    </form>
-
-                    <div class="alert alert-danger" id="errorAlert"></div>
+<div class="container mt-5">
+    <div id="inputCard" class="card url-card">
+        <div class="card-body">
+            <h5 class="card-title">Enter Your URL</h5>
+            <form id="shortenForm" class="mb-4" method="post" action="/">
+                <div class="mb-3">
+                    <input name="targetUrl" type="url" class="form-control" id="targetUrl" required
+                        placeholder="https://example.com" autofocus>
                 </div>
-            </div>
+                <button id="shortenBtn" type="submit" class="btn btn-primary w-100">Shorten</button>
+            </form>
 
-            <div id="resultCard" class="card mt-4 url-card" style="display: none;">
-                <div class="card-body">
-                    <h5 class="card-title">Your Shortened URL</h5>
-                    <div class="input-group mb-3">
-                        <input type="text" id="shortUrl" class="form-control" readonly>
-                        <button class="btn btn-sm btn-outline-success" type="button" id="copyBtn">Copy</button>
-                    </div>
-                </div>
-            </div>
+            <div class="alert alert-danger" id="errorAlert"></div>
         </div>
-
-        <div class="container mt-3 ">
-            <div class="card url-card">
-                <div class="card-body">
-                    {{template "partials/limitations" .}}
-                </div>
-            </div>
-        </div>
-
-        <footer class="footer text-light">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-md-8 text-center">
-                        <a href="https://github.com/tnfy-link" class="mx-3" target="_blank">
-                            <i class="fab fa-github"></i> GitHub
-                        </a>
-                        <!-- <a href="https://tnfy.link/privacy" class="mx-3">
-                        <i class="fas fa-shield-alt"></i> Privacy Policy
-                    </a> -->
-                    </div>
-                </div>
-            </div>
-        </footer>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js"
-        integrity="sha512-ykZ1QQr0Jy/4ZkvKuqWn4iF3lqPZyij9iRv6sGqLRdTPkY69YX6+7wvVGmsdBbiIfN/8OdsI7HABjvEok6ZopQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="/static/js/main.js"></script>
-</body>
+    <div id="resultCard" class="card mt-4 url-card" style="display: none;">
+        <div class="card-body">
+            <h5 class="card-title">Your Shortened URL</h5>
+            <div class="input-group mb-3">
+                <input type="text" id="shortUrl" class="form-control" readonly>
+                <button class="btn btn-sm btn-outline-success" type="button" id="copyBtn">Copy</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-</html>
+<div class="container mt-3 ">
+    <div class="card url-card">
+        <div class="card-body">
+            {{template "partials/limitations" .}}
+        </div>
+    </div>
+</div>

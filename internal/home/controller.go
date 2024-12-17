@@ -10,7 +10,7 @@ type Controller struct {
 }
 
 func (c *Controller) index(ctx *fiber.Ctx) error {
-	return ctx.Render("index", contextIndex{API_URL: c.links.URL()})
+	return ctx.Render("index", contextIndex{API_URL: c.links.URL()}, "layouts/main")
 }
 
 func (c *Controller) redirect(ctx *fiber.Ctx) error {
