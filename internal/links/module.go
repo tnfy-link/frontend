@@ -1,7 +1,7 @@
 package links
 
 import (
-	"github.com/tnfy-link/frontend/pkg/api"
+	"github.com/tnfy-link/client-go/api"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 )

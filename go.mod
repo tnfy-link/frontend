@@ -9,6 +9,7 @@ require (
 	github.com/gofiber/template/html/v2 v2.1.2
 	github.com/joho/godotenv v1.5.1
 	github.com/kelseyhightower/envconfig v1.4.0
+	github.com/tnfy-link/client-go v0.0.0-20241217233708-5a834d735c90
 	go.uber.org/fx v1.23.0
 	go.uber.org/zap v1.27.0
 )
