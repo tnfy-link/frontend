@@ -12,6 +12,10 @@ type HttpConfig struct {
 	Proxies     []string `envconfig:"HTTP__PROXIES"`
 }
 
+type QueueConfig struct {
+	URL string `envconfig:"QUEUE__URL"`
+}
+
 type LinksConfig struct {
 	URL     string        `envconfig:"LINKS__URL"`
 	Timeout time.Duration `envconfig:"LINKS__TIMEOUT" default:"300ms"`
@@ -19,11 +23,17 @@ type LinksConfig struct {
 
 type Config struct {
 	Http  HttpConfig
+	Queue QueueConfig
 	Links LinksConfig
 }
 
 var instance = Config{
-	Http: HttpConfig{Address: "127.0.0.1:3001"},
+	Http: HttpConfig{
+		Address: "127.0.0.1:3001",
+	},
+	Queue: QueueConfig{
+		URL: "redis://localhost:6379/0",
+	},
 	Links: LinksConfig{
 		URL:     "http://localhost:3000/api/",
 		Timeout: time.Millisecond * 300,
