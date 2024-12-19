@@ -27,7 +27,7 @@ func Run() {
 		fx.Provide(func(views fiber.Views, logger *zap.Logger) http.Options {
 			return *(&http.Options{}).
 				WithViews(views).
-				WithErrorHandler(http.NewViewsErrorHandler(logger, "error")).
+				WithErrorHandler(http.NewViewsErrorHandler(logger, "error", "layouts/main")).
 				WithGetOnly()
 		}),
 		http.Module,

@@ -6,7 +6,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.52.5
 	github.com/gofiber/template/html/v2 v2.1.2
 	github.com/tnfy-link/client-go v0.0.0-20241217233708-5a834d735c90
-	github.com/tnfy-link/core v0.0.0-20241219051905-e497a3a84af6
+	github.com/tnfy-link/core v0.0.0-20241219080600-61f5f201753d
 	go.uber.org/fx v1.23.0
 	go.uber.org/zap v1.27.0
 )
