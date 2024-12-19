@@ -30,7 +30,7 @@ $(document).ready(function () {
                 lastRequestTime = Date.now();
                 const shortUrl = response.link.url;
                 $('#targetUrl').attr('readonly', true);
-                $('#shortenBtn').hide();
+                $('#shortenBtn').attr('disabled', true).hide();
 
                 $('#shortUrl').val(shortUrl);
 
