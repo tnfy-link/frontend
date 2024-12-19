@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/tnfy-link/core/http"
 	"github.com/tnfy-link/core/logger"
+	"github.com/tnfy-link/core/redis"
 	"github.com/tnfy-link/core/validator"
 	"github.com/tnfy-link/frontend/internal/config"
 	"github.com/tnfy-link/frontend/internal/home"
@@ -32,6 +33,7 @@ func Run() {
 		}),
 		http.Module,
 		validator.Module,
+		redis.Module,
 		// App Modules
 		config.Module,
 		links.Module,
