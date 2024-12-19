@@ -1,6 +1,10 @@
 package home
 
 import (
+	"context"
+	"strings"
+	"time"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/tnfy-link/frontend/internal/links"
 	"go.uber.org/zap"
@@ -23,6 +27,15 @@ func (c *Controller) redirect(ctx *fiber.Ctx) error {
 		c.log.Error("failed to get link", zap.Error(err))
 		return fiber.NewError(fiber.StatusNotFound, linkNotFoundMessage)
 	}
+
+	go func(id, query string) {
+		ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+		defer cancel()
+
+		if err := c.links.Redirect(ctx, id, query); err != nil {
+			c.log.Error("failed to register redirect", zap.Error(err))
+		}
+	}(strings.Clone(linkID), strings.Clone(ctx.Context().QueryArgs().String()))
 
 	return ctx.Redirect(link.TargetURL, fiber.StatusTemporaryRedirect)
 }
