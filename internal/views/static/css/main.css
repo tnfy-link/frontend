@@ -45,3 +45,43 @@
 .footer a:hover {
     color: #80B3FF;
 }
+
+/* Error Page */
+
+.error-card {
+    transition: all 0.3s ease;
+    /* background: rgba(255, 255, 255, 0.8); */
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.error-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.error-icon {
+    font-size: 6rem;
+    margin-bottom: 1.5rem;
+}
+
+.broken-link-animation {
+    animation: shake 0.5s ease-in-out infinite;
+    display: inline-block;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    75% {
+        transform: translateX(5px);
+    }
+}

@@ -18,14 +18,6 @@ func (s *Service) URL() string {
 	return s.apiURL
 }
 
-func (s *Service) Shorten(ctx context.Context, targetURL string) (api.Link, error) {
-	ctx, cancel := s.prepareContext(ctx)
-	defer cancel()
-
-	res, err := s.api.Shorten(ctx, targetURL)
-	return res.Link, err
-}
-
 func (s *Service) Get(ctx context.Context, linkID string) (api.Link, error) {
 	ctx, cancel := s.prepareContext(ctx)
 	defer cancel()
