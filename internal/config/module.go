@@ -1,8 +1,8 @@
 package config
 
 import (
+	"github.com/tnfy-link/core/http"
 	"github.com/tnfy-link/frontend/internal/links"
-	"github.com/tnfy-link/frontend/pkg/core/http"
 	"go.uber.org/fx"
 )
 

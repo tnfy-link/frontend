@@ -2,13 +2,13 @@ package internal
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/tnfy-link/core/http"
+	"github.com/tnfy-link/core/logger"
+	"github.com/tnfy-link/core/validator"
 	"github.com/tnfy-link/frontend/internal/config"
 	"github.com/tnfy-link/frontend/internal/home"
 	"github.com/tnfy-link/frontend/internal/links"
 	"github.com/tnfy-link/frontend/internal/views"
-	"github.com/tnfy-link/frontend/pkg/core/http"
-	"github.com/tnfy-link/frontend/pkg/core/logger"
-	"github.com/tnfy-link/frontend/pkg/core/validator"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
 	"go.uber.org/zap"
@@ -25,11 +25,10 @@ func Run() {
 			return &logOption
 		}),
 		fx.Provide(func(views fiber.Views, logger *zap.Logger) http.Options {
-			opts := http.Options{}
-			http.WithViews(views)(&opts)
-			http.WithErrorHandler(http.NewViewsErrorHandler(logger, "error"))(&opts)
-			http.WithGetOnly()(&opts)
-			return opts
+			return *(&http.Options{}).
+				WithViews(views).
+				WithErrorHandler(http.NewViewsErrorHandler(logger, "error")).
+				WithGetOnly()
 		}),
 		http.Module,
 		validator.Module,

@@ -3,7 +3,7 @@ package config
 import (
 	"time"
 
-	"github.com/tnfy-link/frontend/pkg/core/config"
+	"github.com/tnfy-link/core/config"
 )
 
 type HttpConfig struct {
