@@ -24,6 +24,8 @@ type Service struct {
 	api   *api.Client
 	queue *queue.StatsQueue
 
+	cache Cache
+
 	log *zap.Logger
 
 	apiURL  string
@@ -35,10 +37,19 @@ func (s *Service) URL() string {
 }
 
 func (s *Service) Get(ctx context.Context, linkID string) (api.Link, error) {
+	if res, ok := s.cache.Get(linkID); ok {
+		s.log.Debug("got link from cache", zap.String("id", linkID))
+		return res, nil
+	}
+
 	ctx, cancel := s.prepareContext(ctx)
 	defer cancel()
 
 	res, err := s.api.GetLink(ctx, linkID)
+	if err == nil && !res.Link.ValidUntil.IsZero() && time.Until(res.Link.ValidUntil) > time.Second {
+		s.cache.Set(linkID, res.Link, time.Until(res.Link.ValidUntil))
+	}
+
 	return res.Link, err
 }
 
@@ -76,12 +87,16 @@ func (s *Service) prepareContext(ctx context.Context) (context.Context, context.
 	return context.WithTimeout(ctx, s.timeout)
 }
 
-func New(api *api.Client, queue *queue.StatsQueue, log *zap.Logger, config Config) *Service {
+func New(api *api.Client, queue *queue.StatsQueue, cache Cache, log *zap.Logger, config Config) *Service {
 	if api == nil {
 		panic("api client is nil")
 	}
 	if queue == nil {
 		panic("queue is nil")
+	}
+
+	if cache == nil {
+		panic("cache is nil")
 	}
 
 	if log == nil {
@@ -91,6 +106,8 @@ func New(api *api.Client, queue *queue.StatsQueue, log *zap.Logger, config Confi
 	return &Service{
 		api:   api,
 		queue: queue,
+
+		cache: cache,
 
 		log: log,
 

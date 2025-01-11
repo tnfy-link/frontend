@@ -5,6 +5,7 @@ go 1.23.2
 require (
 	github.com/gofiber/fiber/v2 v2.52.5
 	github.com/gofiber/template/html/v2 v2.1.2
+	github.com/jellydator/ttlcache/v3 v3.3.0
 	github.com/tnfy-link/client-go v0.1.0
 	github.com/tnfy-link/core v0.0.0-20241219080600-61f5f201753d
 	go.uber.org/fx v1.23.0
@@ -39,6 +40,7 @@ require (
 	go.uber.org/multierr v1.10.0 // indirect
 	golang.org/x/crypto v0.32.0 // indirect
 	golang.org/x/net v0.34.0 // indirect
+	golang.org/x/sync v0.10.0 // indirect
 	golang.org/x/sys v0.29.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 )
