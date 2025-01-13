@@ -21,7 +21,7 @@ func (c *Controller) index(ctx *fiber.Ctx) error {
 }
 
 func (c *Controller) redirect(ctx *fiber.Ctx) error {
-	linkID := ctx.Params("id")
+	linkID := strings.Clone(ctx.Params("id"))
 	link, err := c.links.Get(ctx.Context(), linkID)
 	if err != nil {
 		c.log.Error("failed to get link", zap.Error(err))
@@ -35,7 +35,7 @@ func (c *Controller) redirect(ctx *fiber.Ctx) error {
 		if err := c.links.Redirect(ctx, id, query); err != nil {
 			c.log.Error("failed to register redirect", zap.Error(err))
 		}
-	}(strings.Clone(linkID), strings.Clone(ctx.Context().QueryArgs().String()))
+	}(linkID, strings.Clone(ctx.Context().QueryArgs().String()))
 
 	return ctx.Redirect(link.TargetURL, fiber.StatusTemporaryRedirect)
 }
