@@ -7,7 +7,10 @@
                     <input name="targetUrl" type="url" class="form-control" id="targetUrl" required
                         placeholder="https://example.com" autofocus>
                 </div>
-                <button id="shortenBtn" type="submit" class="btn btn-primary w-100">Shorten</button>
+                <button id="shortenBtn" type="submit" class="btn btn-primary w-100">
+                    <span class="spinner-border spinner-border-sm" role="status" style="display: none;"></span>
+                    <span class="btn-text">Shorten</span>
+                </button>
             </form>
 
             <div class="alert alert-danger" id="errorAlert"></div>

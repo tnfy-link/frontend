@@ -20,6 +20,9 @@ $(document).ready(function () {
         // Reset alerts
         $('.alert').hide();
 
+        // Show loading state
+        setLoading(true);
+
         // Make API request
         $.ajax({
             url: CONFIG.API_URL + 'v1/links',
@@ -42,6 +45,9 @@ $(document).ready(function () {
                     errorMessage = xhr.responseJSON.error;
                 }
                 showError(errorMessage);
+            },
+            complete: function () {
+                setLoading(false);
             }
         });
     });
@@ -54,6 +60,23 @@ $(document).ready(function () {
             setTimeout(() => $('#copyBtn').text(originalText), 2000);
         });
     });
+
+    // Show loading state
+    function setLoading(loading) {
+        const $btn = $('#shortenBtn');
+        const $spinner = $btn.find('.spinner-border');
+        const $text = $btn.find('.btn-text');
+
+        if (loading) {
+            $btn.prop('disabled', true);
+            $spinner.show();
+            $text.text('Shortening...');
+        } else {
+            $btn.prop('disabled', false);
+            $spinner.hide();
+            $text.text('Shorten');
+        }
+    }
 
     function showError(message) {
         $('#errorAlert').text(message).fadeIn();
