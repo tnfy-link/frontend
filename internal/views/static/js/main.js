@@ -25,14 +25,14 @@ $(document).ready(function () {
 
         // Make API request
         $.ajax({
-            url: CONFIG.API_URL + 'v1/links',
+            url: '/api/links',
             method: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify({ link: { targetUrl } }),
+            data: JSON.stringify({ targetUrl }),
             success: function (response) {
                 lastRequestTime = Date.now();
-                const shortUrl = response.link.url;
-                const validUntil = new Date(response.link.validUntil);
+                const shortUrl = response.url;
+                const validUntil = new Date(response.validUntil);
 
                 $('#targetUrl').attr('readonly', true);
                 $('#shortenBtn').attr('disabled', true).hide();

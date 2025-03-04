@@ -3,9 +3,11 @@ package internal
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/tnfy-link/core/http"
+	"github.com/tnfy-link/core/http/jsonify"
 	"github.com/tnfy-link/core/logger"
 	"github.com/tnfy-link/core/redis"
 	"github.com/tnfy-link/core/validator"
+	"github.com/tnfy-link/frontend/internal/api"
 	"github.com/tnfy-link/frontend/internal/config"
 	"github.com/tnfy-link/frontend/internal/home"
 	"github.com/tnfy-link/frontend/internal/links"
@@ -28,8 +30,7 @@ func Run() {
 		fx.Provide(func(views fiber.Views, logger *zap.Logger) http.Options {
 			return *(&http.Options{}).
 				WithViews(views).
-				WithErrorHandler(http.NewViewsErrorHandler(logger, "error", "layouts/main")).
-				WithGetOnly()
+				WithErrorHandler(http.NewViewsErrorHandler(logger, "error", "layouts/main"))
 		}),
 		http.Module,
 		validator.Module,
@@ -39,9 +40,11 @@ func Run() {
 		links.Module,
 		views.Module,
 		home.Module,
+		api.Module,
 		// Kickstarter
-		fx.Invoke(func(app *fiber.App, home *home.Controller) {
+		fx.Invoke(func(app *fiber.App, home *home.Controller, api *api.API) {
 			home.Register(app)
+			api.Register(app.Group("/api").Use(jsonify.New()))
 
 			app.Use(func(c *fiber.Ctx) error {
 				return fiber.NewError(fiber.StatusNotFound, "Not Found")
