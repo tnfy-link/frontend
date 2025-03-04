@@ -2,6 +2,7 @@ package links
 
 import (
 	"context"
+	"fmt"
 	"net/url"
 	"time"
 
@@ -28,12 +29,20 @@ type Service struct {
 
 	log *zap.Logger
 
-	apiURL  string
 	timeout time.Duration
 }
 
-func (s *Service) URL() string {
-	return s.apiURL
+func (s *Service) Shorten(ctx context.Context, targetURL string) (api.Link, error) {
+	ctx, cancel := s.prepareContext(ctx)
+	defer cancel()
+
+	resp, err := s.api.Shorten(ctx, targetURL)
+	if err != nil {
+		s.log.Error("failed to shorten URL", zap.String("targetURL", targetURL), zap.Error(err))
+		return api.Link{}, fmt.Errorf("failed to shorten URL: %w", err)
+	}
+
+	return resp.Link, nil
 }
 
 func (s *Service) Get(ctx context.Context, linkID string) (api.Link, error) {
@@ -91,6 +100,7 @@ func New(api *api.Client, queue *queue.StatsQueue, cache Cache, log *zap.Logger,
 	if api == nil {
 		panic("api client is nil")
 	}
+
 	if queue == nil {
 		panic("queue is nil")
 	}
@@ -111,7 +121,6 @@ func New(api *api.Client, queue *queue.StatsQueue, cache Cache, log *zap.Logger,
 
 		log: log,
 
-		apiURL:  config.URL,
 		timeout: config.Timeout,
 	}
 }
