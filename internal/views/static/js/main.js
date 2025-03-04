@@ -32,10 +32,13 @@ $(document).ready(function () {
             success: function (response) {
                 lastRequestTime = Date.now();
                 const shortUrl = response.link.url;
+                const validUntil = new Date(response.link.validUntil);
+
                 $('#targetUrl').attr('readonly', true);
                 $('#shortenBtn').attr('disabled', true).hide();
 
                 $('#shortUrl').val(shortUrl);
+                $('#validUntil').text(validUntil.toLocaleString());
 
                 $('#resultCard').fadeIn();
             },
