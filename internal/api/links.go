@@ -14,27 +14,6 @@ type Links struct {
 	links *links.Service
 }
 
-func (l *Links) post(ctx *fiber.Ctx) error {
-	req := LinksPostRequest{}
-	if err := l.BodyParserValidator(ctx, &req); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
-	}
-
-	link, err := l.links.Shorten(ctx.Context(), req.TargetURL)
-	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "failed to shorten link"})
-	}
-
-	return ctx.JSON(LinksPostResponse{
-		URL:        link.URL,
-		ValidUntil: link.ValidUntil,
-	})
-}
-
-func (l *Links) Register(r fiber.Router) {
-	r.Post("/", l.post)
-}
-
 func NewLinks(links *links.Service, validator *validator.Validate, log *zap.Logger) *Links {
 	if links == nil {
 		panic("links service is nil")
@@ -51,4 +30,25 @@ func NewLinks(links *links.Service, validator *validator.Validate, log *zap.Logg
 			Validator: validator,
 		},
 	}
+}
+
+func (l *Links) post(ctx *fiber.Ctx) error {
+	req := new(LinksPostRequest)
+	if err := l.BodyParserValidator(ctx, req); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	link, err := l.links.Shorten(ctx.Context(), req.TargetURL)
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "failed to shorten link"})
+	}
+
+	return ctx.JSON(LinksPostResponse{
+		URL:        link.URL,
+		ValidUntil: link.ValidUntil,
+	})
+}
+
+func (l *Links) Register(r fiber.Router) {
+	r.Post("/", l.post)
 }

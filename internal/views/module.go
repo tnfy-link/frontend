@@ -9,19 +9,23 @@ import (
 	"go.uber.org/fx"
 )
 
-var Module = fx.Module(
-	"views",
-	fx.Provide(New),
-	fx.Invoke(func(app *fiber.App) {
-		app.Use(favicon.New(favicon.Config{
-			File:       "static/favicon.ico",
-			FileSystem: http.FS(Static),
-		}))
-		app.Use("/static", filesystem.New(filesystem.Config{
-			Root:       http.FS(Static),
-			PathPrefix: "static",
-			Browse:     false,
-			MaxAge:     3600,
-		}))
-	}),
-)
+func Module() fx.Option {
+	const staticMaxAge = 3600
+
+	return fx.Module(
+		"views",
+		fx.Provide(New),
+		fx.Invoke(func(app *fiber.App) {
+			app.Use(favicon.New(favicon.Config{
+				File:       "static/favicon.ico",
+				FileSystem: http.FS(Static),
+			}))
+			app.Use("/static", filesystem.New(filesystem.Config{
+				Root:       http.FS(Static),
+				PathPrefix: "static",
+				Browse:     false,
+				MaxAge:     staticMaxAge,
+			}))
+		}),
+	)
+}

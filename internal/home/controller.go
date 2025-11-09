@@ -17,7 +17,11 @@ type Controller struct {
 }
 
 func (c *Controller) index(ctx *fiber.Ctx) error {
-	return ctx.Render("index", nil, "layouts/main")
+	if err := ctx.Render("index", nil, "layouts/main"); err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return nil
 }
 
 func (c *Controller) redirect(ctx *fiber.Ctx) error {
@@ -32,12 +36,16 @@ func (c *Controller) redirect(ctx *fiber.Ctx) error {
 		ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 		defer cancel()
 
-		if err := c.links.Redirect(ctx, id, query); err != nil {
-			c.log.Error("failed to register redirect", zap.Error(err))
+		if redirErr := c.links.Redirect(ctx, id, query); redirErr != nil {
+			c.log.Error("failed to register redirect", zap.Error(redirErr))
 		}
 	}(linkID, strings.Clone(ctx.Context().QueryArgs().String()))
 
-	return ctx.Redirect(link.TargetURL, fiber.StatusTemporaryRedirect)
+	if renderErr := ctx.Redirect(link.TargetURL, fiber.StatusTemporaryRedirect); renderErr != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, renderErr.Error())
+	}
+
+	return nil
 }
 
 func (c *Controller) Register(r fiber.Router) {

@@ -10,32 +10,34 @@ import (
 	"go.uber.org/zap"
 )
 
-var Module = fx.Module(
-	"links",
-	fx.Decorate(func(log *zap.Logger) *zap.Logger {
-		return log.Named("links")
-	}),
-	fx.Provide(func(config Config) *api.Client {
-		return api.New(config.URL)
-	}, fx.Private),
-	fx.Provide(queue.NewStatsQueue, fx.Private),
-	fx.Provide(
-		func() Cache {
-			return cache.New[api.Link]()
-		},
-		fx.Private,
-	),
-	fx.Provide(New),
-	fx.Invoke(func(cache Cache, lc fx.Lifecycle) {
-		lc.Append(fx.Hook{
-			OnStart: func(_ context.Context) error {
-				go cache.Start()
-				return nil
+func Module() fx.Option {
+	return fx.Module(
+		"links",
+		fx.Decorate(func(log *zap.Logger) *zap.Logger {
+			return log.Named("links")
+		}),
+		fx.Provide(func(config Config) *api.Client {
+			return api.New(config.URL)
+		}, fx.Private),
+		fx.Provide(queue.NewStatsQueue, fx.Private),
+		fx.Provide(
+			func() Cache {
+				return cache.New[api.Link]()
 			},
-			OnStop: func(_ context.Context) error {
-				cache.Stop()
-				return nil
-			},
-		})
-	}),
-)
+			fx.Private,
+		),
+		fx.Provide(New),
+		fx.Invoke(func(cache Cache, lc fx.Lifecycle) {
+			lc.Append(fx.Hook{
+				OnStart: func(_ context.Context) error {
+					go cache.Start()
+					return nil
+				},
+				OnStop: func(_ context.Context) error {
+					cache.Stop()
+					return nil
+				},
+			})
+		}),
+	)
+}

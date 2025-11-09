@@ -15,12 +15,6 @@ const (
 	maxUTMLabelValueLength = 64
 )
 
-var utmLabels = map[string]string{
-	"utm_source":   "source",
-	"utm_medium":   "medium",
-	"utm_campaign": "campaign",
-}
-
 type Service struct {
 	api   *api.Client
 	queue *queue.StatsQueue
@@ -59,7 +53,11 @@ func (s *Service) Get(ctx context.Context, linkID string) (api.Link, error) {
 		s.cache.Set(linkID, res.Link, time.Until(res.Link.ValidUntil))
 	}
 
-	return res.Link, err
+	if err != nil {
+		return api.Link{}, fmt.Errorf("failed to get link: %w", err)
+	}
+
+	return res.Link, nil
 }
 
 func (s *Service) Redirect(ctx context.Context, id, query string) error {
@@ -69,27 +67,49 @@ func (s *Service) Redirect(ctx context.Context, id, query string) error {
 		s.log.Warn("failed to parse query", zap.Error(err))
 	}
 
-	labels := labels{}
+	utmLabels := map[string]string{
+		"utm_source":   "source",
+		"utm_medium":   "medium",
+		"utm_campaign": "campaign",
+	}
+	lbls := labels{}
 
 	for k, v := range utmLabels {
 		if val := values.Get(k); val != "" {
-			if err := validateUTMValue(val); err != nil {
-				s.log.Warn("invalid utm value", zap.String("id", id), zap.String("label", v), zap.String("value", val), zap.Error(err))
+			if utmErr := validateUTMValue(val); utmErr != nil {
+				s.log.Warn(
+					"invalid utm value",
+					zap.String("id", id),
+					zap.String("label", v),
+					zap.String("value", val),
+					zap.Error(utmErr),
+				)
 				continue
 			}
 
 			if len(val) > maxUTMLabelValueLength {
-				s.log.Warn("label value too long", zap.String("id", id), zap.String("label", v), zap.String("value", val))
+				s.log.Warn(
+					"label value too long",
+					zap.String("id", id),
+					zap.String("label", v),
+					zap.String("value", val),
+				)
 				val = val[:maxUTMLabelValueLength]
 			}
-			labels[v] = val
+			lbls[v] = val
 		}
 	}
 
-	return s.queue.Enqueue(ctx, queue.StatsIncrEvent{
+	err = s.queue.Enqueue(ctx, queue.StatsIncrEvent{
 		LinkID: id,
-		Labels: labels,
+		Labels: lbls,
 	})
+
+	if err != nil {
+		return fmt.Errorf("failed to register redirect: %w", err)
+	}
+
+	return nil
 }
 
 func (s *Service) prepareContext(ctx context.Context) (context.Context, context.CancelFunc) {
