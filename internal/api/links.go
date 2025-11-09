@@ -19,6 +19,10 @@ func NewLinks(links *links.Service, validator *validator.Validate, log *zap.Logg
 		panic("links service is nil")
 	}
 
+	if validator == nil {
+		panic("validator is nil")
+	}
+
 	if log == nil {
 		panic("logger is nil")
 	}
