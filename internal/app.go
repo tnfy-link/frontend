@@ -36,17 +36,17 @@ func Run() {
 		validator.Module,
 		redis.Module,
 		// App Modules
-		config.Module,
-		links.Module,
-		views.Module,
-		home.Module,
-		api.Module,
+		config.Module(),
+		links.Module(),
+		views.Module(),
+		home.Module(),
+		api.Module(),
 		// Kickstarter
 		fx.Invoke(func(app *fiber.App, home *home.Controller, api *api.API) {
 			home.Register(app)
 			api.Register(app.Group("/api").Use(jsonify.New()))
 
-			app.Use(func(c *fiber.Ctx) error {
+			app.Use(func(_ *fiber.Ctx) error {
 				return fiber.NewError(fiber.StatusNotFound, "Not Found")
 			})
 		}),

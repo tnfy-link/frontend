@@ -1,12 +1,13 @@
 package config
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/tnfy-link/core/config"
 )
 
-type HttpConfig struct {
+type HTTPConfig struct {
 	Address     string   `envconfig:"HTTP__ADDRESS"`
 	ProxyHeader string   `envconfig:"HTTP__PROXY_HEADER"`
 	Proxies     []string `envconfig:"HTTP__PROXIES"`
@@ -22,24 +23,33 @@ type LinksConfig struct {
 }
 
 type Config struct {
-	Http  HttpConfig
+	HTTP  HTTPConfig
 	Queue QueueConfig
 	Links LinksConfig
 }
 
-var instance = Config{
-	Http: HttpConfig{
-		Address: "127.0.0.1:3001",
-	},
-	Queue: QueueConfig{
-		URL: "redis://localhost:6379/0",
-	},
-	Links: LinksConfig{
-		URL:     "http://localhost:3000/api/",
-		Timeout: time.Millisecond * 300,
-	},
+func Default() Config {
+	//nolint:exhaustruct,mnd // default values
+	return Config{
+		HTTP: HTTPConfig{
+			Address: "127.0.0.1:3001",
+		},
+		Queue: QueueConfig{
+			URL: "redis://localhost:6379/0",
+		},
+		Links: LinksConfig{
+			URL:     "http://localhost:3000/api/",
+			Timeout: time.Millisecond * 300,
+		},
+	}
 }
 
 func New() (Config, error) {
-	return instance, config.Load(&instance)
+	instance := Default()
+
+	if err := config.Load(&instance); err != nil {
+		return instance, fmt.Errorf("failed to load config: %w", err)
+	}
+
+	return instance, nil
 }
