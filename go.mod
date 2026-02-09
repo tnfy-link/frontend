@@ -4,7 +4,7 @@ go 1.24.0
 
 require (
 	github.com/go-playground/validator/v10 v10.23.0
-	github.com/gofiber/fiber/v2 v2.52.9
+	github.com/gofiber/fiber/v2 v2.52.11
 	github.com/gofiber/template/html/v2 v2.1.2
 	github.com/jellydator/ttlcache/v3 v3.3.0
 	github.com/tnfy-link/client-go v0.1.0
